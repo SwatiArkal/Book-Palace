@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.com">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Book Store</title>
+    <script>
+  function validateForm() {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const address = document.getElementById("address").value;
+    const contact = document.getElementById("contact").value;
+    const passwordError = document.getElementById("passwordError");
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&!])[A-Za-z\d@#$%^&!]{8,}$/;
+
+    let isValid = true;
+
+    // Name validation
+    if (name.trim() === "") {
+      document.getElementById("nameError").innerHTML = "Name is required.";
+      isValid = false;
+    } else {
+      document.getElementById("nameError").innerHTML = "";
+    }
+
+    // Email validation using regex pattern
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      document.getElementById("emailError").innerHTML = "Please enter a valid email address.";
+      isValid = false;
+    } else {
+      document.getElementById("emailError").innerHTML = "";
+    }
+
+    // Password validation
+    if (password.length < 8 || !passwordRegex.test(password)) {
+      passwordError.innerHTML = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character (@#$%^&!).";
+      isValid = false;
+    } else {
+      passwordError.innerHTML = "";
+    }
+    
+    // Address validation
+    if (address.trim() === "") {
+      document.getElementById("addressError").innerHTML = "Address is required.";
+      isValid = false;
+    } else {
+      document.getElementById("addressError").innerHTML = "";
+    }
+
+    // Contact number validation (10 digits)
+    const contactRegex = /^\d{10}$/;
+    if (!contactRegex.test(contact)) {
+      document.getElementById("contactError").innerHTML = "Please enter a 10-digit contact number.";
+      isValid = false;
+    } else {
+      document.getElementById("contactError").innerHTML = "";
+    }
+
+    return isValid;
+  }
+  </script>
+    
+  </head>
+  <body>
+  
+  	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">BookStore</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/login">Login</a>
+        </li>
+<!--         <li class="nav-item"> -->
+<!--           <a class="nav-link text-white" href="my_books">My Books</a> -->
+<!--         </li> -->
+      </ul>
+      <div>
+<!--       	<a class="nav-link text-white" href="book_register">New Book Register</a> -->
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- 		<img src="/images/bg.png" width="260px" /><br> -->
+	<div class="container my-3">
+		<h4 class="text-left my-4">Registration Form</h4>
+		<th:block th:if="${session.msg}">
+        <p class="text-center text-success fs-4">[[${session.msg}]]</p>
+        <th:block th:text="${@userService.removeSessionMessage()}"></th:block>
+    	</th:block>
+			<form th:action="@{/signupProcess}" method="post" th:object="${user}" onsubmit="return validateForm()">
+			<div class="mb-3">
+				<label for="name" class="form-label">Name</label>
+				<input type="text" class="form-control" id="name" style="width: 30%;" name="name" th:field="*{name}">
+				  <span id="nameError" class="text-danger" th:errors="*{name}"></span>
+			</div>
+			<div class="mb-3">
+				<label for="email" class="form-label">Email</label>
+				<input type="email" class="form-control" id="email" style="width: 30%;" name="email" th:field="*{email}">
+				  <span id="emailError" class="text-danger" th:errors="*{email}"></span>
+			</div>
+			<div class="mb-3">
+				<label for="password" class="form-label">Password</label>
+				<input type="password" class="form-control" id="password" style="width: 30%;" name="password" th:field="*{password}">
+				  <span id="passwordError" class="text-danger" th:errors="*{password}"></span>
+			</div>
+			<div class="mb-3">
+				<label for="address" class="form-label">Address</label>
+				<textarea class="form-control" id="address" style="width: 30%;" name="address" th:field="*{address}"></textarea>
+				   <span id="addressError" class="text-danger" th:errors="*{address}"></span>
+			</div>
+			<div class="mb-3">
+				<label for="contact" class="form-label">Contact Number</label>
+				<input type="tel" class="form-control" id="contact" style="width: 30%;" name="contact" th:field="*{contact}">
+				   <span id="contactError" class="text-danger" th:errors="*{contact}"></span>
+			</div>
+
+			<button type="submit" class="btn btn-primary">Sign up</button>
+		</form>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    
+  </body>
+</html>
